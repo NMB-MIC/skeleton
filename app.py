@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 import dotenv
-import pandas as pd
 import time
 import redis
 from pathlib import Path
