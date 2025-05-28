@@ -9,16 +9,19 @@ services:
     container_name: 'streamlit_skeleton'
     privileged: true
     volumes:
-      - ./csv:/app/csv
-      - ./txt:/app/txt
-      - ./.env:/app/.env
+      - './csv:/app/csv'
+      - '${LOCAL_TXT_DIR}:/app/txt'
+      - './.env:/app/.env'
     ports:
-      - '9500:8502'
-    # depends_on:
-    #   - redis
+      - '${PORT}:8502'
+
+    env_file:
+      - .env
     command: ["streamlit", "run", "app.py", "--server.port=8502", "--server.address=0.0.0.0"]
     restart: always
-
+    # depends_on:
+    #   - redis
+    
   # redis_queue:
   #   image: "mic/skeleton_app:1.0.0"
   #   container_name: redis-queue
