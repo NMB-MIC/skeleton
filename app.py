@@ -33,7 +33,8 @@ def input_data():
             if all(val != "" for val in [emp_no, model, order_no,line_no]):
                 txt_value = f'{line_no}\n{emp_no}\n{model}\n{order_no}'
                 print(txt_value)
-                r.rpush('data_queue', txt_value)
+                # r.rpush('data_queue', txt_value)  # redis
+                create_txt(txt_value)
                 st.success('SUCCESS', icon="✅")
             else:
                 st.error('DATA NCOMPLETE', icon="🚨")
@@ -41,7 +42,20 @@ def input_data():
             st.session_state.clear_fields = True
             time.sleep(0.5)
             st.rerun()
-            
+
+def create_txt(item):
+    if item:
+        data = item
+        lines = data.splitlines()
+        if not lines:
+            pass
+        line_no = lines[0].strip()
+        filename = f"{TXT_DIR}/PC-{line_no}.txt"
+
+        with open(filename,"w",encoding="utf-8") as f: # not append
+            f.write(data + "\n")
+            print(f"record to {filename}: {data}")
+
 def verify_data():
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -78,6 +92,6 @@ def main_layout():
     
 if __name__ == "__main__":
     dotenv_file = dotenv.find_dotenv()
-    r  = redis.Redis(host='redis', port=6379, db=0)
+    # r  = redis.Redis(host='redis', port=6379, db=0)
     dotenv.load_dotenv(dotenv_file, override=True)
     main_layout()
