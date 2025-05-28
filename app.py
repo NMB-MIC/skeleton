@@ -21,10 +21,15 @@ def input_data():
         emp_no = st.text_input("Employee No.",type="default",key="emp_no")
         model = st.text_input("Model",type="default",key="model")
         order_no = st.text_input("Order No.",type="default",key="order_no")
-        line_no = st.text_input("Line No.",type="default",key="line_no")
-
+        line_no = st.text_input("Line No.",type="default",key="line_no",disabled =True,placeholder=os.environ["LINE_NO"])
+        line_no = os.environ["LINE_NO"]
         submit_button = st.button("Save file",key='submit_button',use_container_width=True)
-
+        clear_button = st.button("🚨Clear","clear_button",use_container_width=True)
+      
+        if clear_button:
+            st.session_state.clear_fields = True
+            st.rerun()
+          
         if submit_button:
             if all(val != "" for val in [emp_no, model, order_no,line_no]):
                 txt_value = f'{line_no}\n{emp_no}\n{model}\n{order_no}'
