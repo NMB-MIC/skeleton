@@ -2,7 +2,6 @@ import streamlit as st
 import os
 import dotenv
 import time
-import redis
 from pathlib import Path
 
 TXT_DIR = "/app/txt"

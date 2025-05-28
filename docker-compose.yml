@@ -9,9 +9,8 @@ services:
     container_name: 'streamlit_skeleton'
     privileged: true
     volumes:
-      - './csv:/app/csv'
       - '${LOCAL_TXT_DIR}:/app/txt'
-      - './.env:/app/.env'
+      - ./.env:/app/.env
     ports:
       - '${PORT}:8502'
 
@@ -21,7 +20,25 @@ services:
     restart: always
     # depends_on:
     #   - redis
-    
+  transfert_flie:
+    image: "mic/skeleton_app:1.0.0"
+    container_name: 'transfert_flie'
+    volumes:
+      - ./.env:/app/.env
+      - ./csv_source:/app/csv_source
+      - ./csv_destination:/app/csv_destination
+    command: ["python", "transfer.py"] 
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    privileged: true
+    container_name: 'ofelia'
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config.ini:/etc/ofelia/config.ini
+
+
   # redis_queue:
   #   image: "mic/skeleton_app:1.0.0"
   #   container_name: redis-queue
