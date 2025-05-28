@@ -3,31 +3,32 @@ import os
 import dotenv
 import pandas as pd
 import time
-from datetime import datetime
 import redis
 from pathlib import Path
 
-# TXT_DIR = './txt'
 TXT_DIR = "/app/txt"
 # session clear
 if "clear_fields" in st.session_state and st.session_state.clear_fields:
-    st.session_state.emp_id = ""
-    st.session_state.part_no = ""
-    st.session_state.mc_no = ""
+    st.session_state.emp_no = ""
+    st.session_state.model = ""
+    st.session_state.order_no = ""
+    st.session_state.line_no = ""
     st.session_state.clear_fields = False
 
 def input_data():
     col1, col2, col3 = st.columns(3)
     with col2:
-        emp_id = st.text_input("Employee ID",type="default",key="emp_id")
-        part_no = st.text_input("Part no.",type="default",key="part_no")
-        mc_no = st.text_input("MC no.",type="default",key="mc_no")
+        emp_no = st.text_input("Employee No.",type="default",key="emp_no")
+        model = st.text_input("Model",type="default",key="model")
+        order_no = st.text_input("Order No.",type="default",key="order_no")
+        line_no = st.text_input("Line No.",type="default",key="line_no")
 
-        submit_button = st.button("Submit",key='submit_button',use_container_width=True)
+        submit_button = st.button("Save file",key='submit_button',use_container_width=True)
 
         if submit_button:
-            if all(val != "" for val in [emp_id, part_no, mc_no]):
-                txt_value = f'{emp_id}_{part_no}_{mc_no}'
+            if all(val != "" for val in [emp_no, model, order_no,line_no]):
+                txt_value = f'{line_no}\n{emp_no}\n{model}\n{order_no}'
+                print(txt_value)
                 r.rpush('data_queue', txt_value)
                 st.success('SUCCESS', icon="✅")
             else:
@@ -43,7 +44,6 @@ def verify_data():
         txt_path = Path("/app/txt")
         txt_files = [f.name for f in txt_path.glob("*.txt")]
 
-        
         selected_file = st.selectbox("select file", txt_files)
         preview_button = st.button("Preview",key='preview_button')
 
@@ -65,7 +65,7 @@ def main_layout():
         initial_sidebar_state="expanded",
     )
 
-    st.markdown("""<h1 style='text-align: center;'>Skeleton AI System</h1>""", unsafe_allow_html=True)
+    st.markdown("""<h1 style='text-align: center;'>Skeletal AI Barcode entry</h1>""", unsafe_allow_html=True)
     tab1, tab2 = st.tabs(["📝 INPUT", "📂 VERIFY"])
     with tab1:
         input_data()
